@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Ironsworn · Iron Journal</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- map styles are separate, loaded in /map -->
+  <link rel="stylesheet" href="map/map.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <h1>⚒️ IRONSWORN <span class="grit">JOURNAL</span></h1>
+      <div class="tab-bar" id="tabBar">
+        <button class="tab-btn active" data-tab="progress">📋 Progress</button>
+        <button class="tab-btn" data-tab="character">🧑 Character</button>
+        <button class="tab-btn" data-tab="map">🗺️ Map</button>
+        <button class="tab-btn" data-tab="locations">📍 Locations</button>
+        <button class="tab-btn" data-tab="npcs">👥 NPCs</button>
+      </div>
+    </header>
+
+    <main class="tab-content" id="tabContent">
+      <!-- Progress Tracker Tab -->
+      <section id="progress" class="tab-pane active">
+        <div class="pane-header">
+          <h2>Progress Tracks</h2>
+          <button class="btn primary" id="addTrackBtn">+ New Track</button>
+        </div>
+        <div id="tracksList" class="tracks-list"></div>
+        <!-- track edit modal (inline) -->
+        <div id="trackModal" class="modal hidden">
+          <div class="modal-card">
+            <h3 id="modalTitle">Create Track</h3>
+            <label>Name</label>
+            <input type="text" id="trackNameInput" placeholder="Vow / Journey" />
+            <label>Rank</label>
+            <select id="trackRankSelect">
+              <option value="troublesome">Troublesome (3 progress, 3 ticks/box)</option>
+              <option value="dangerous">Dangerous (2 progress)</option>
+              <option value="formidable">Formidable (1 progress)</option>
+              <option value="extreme">Extreme (2 ticks)</option>
+              <option value="epic">Epic (1 tick)</option>
+            </select>
+            <div class="modal-actions">
+              <button class="btn" id="cancelTrackModal">Cancel</button>
+              <button class="btn primary" id="saveTrack">Save</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Character Tab -->
+      <section id="character" class="tab-pane">
+        <div class="character-grid">
+          <div class="char-portrait">
+            <div class="portrait-frame">
+              <img id="charImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='45' r='35' fill='%23333'/%3E%3Ccircle cx='50' cy='45' r='30' fill='%23555'/%3E%3C/svg%3E" alt="character">
+              <input type="file" id="imageUpload" accept="image/*" style="display:none">
+              <button class="btn small" id="changeImageBtn">📸 Change</button>
+            </div>
+            <input type="text" id="charName" placeholder="Character Name" value="Ironheart" class="char-name-input">
+          </div>
+          <div class="char-stats">
+            <div class="stat-row">
+              <span>Edge</span><input type="number" id="statEdge" min="0" max="5" value="2">
+              <span>Iron</span><input type="number" id="statIron" min="0" max="5" value="2">
+              <span>Heart</span><input type="number" id="statHeart" min="0" max="5" value="2">
+              <span>Wit</span><input type="number" id="statWit" min="0" max="5" value="1">
+              <span>Shadow</span><input type="number" id="statShadow" min="0" max="5" value="1">
+            </div>
+            <div class="gauges">
+              <div class="gauge">
+                <span>❤️ Health</span>
+                <div class="gauge-control"><button class="btn small dec" data-target="health">-</button><span id="healthVal">5</span>/5<button class="btn small inc" data-target="health">+</button></div>
+              </div>
+              <div class="gauge">
+                <span>✨ Spirit</span>
+                <div class="gauge-control"><button class="btn small dec" data-target="spirit">-</button><span id="spiritVal">5</span>/5<button class="btn small inc" data-target="spirit">+</button></div>
+              </div>
+              <div class="gauge">
+                <span>🎒 Supply</span>
+                <div class="gauge-control"><button class="btn small dec" data-target="supply">-</button><span id="supplyVal">5</span>/5<button class="btn small inc" data-target="supply">+</button></div>
+              </div>
+            </div>
+            <div class="momentum-box">
+              <span>⚡ Momentum</span>
+              <div class="momentum-control">
+                <button class="btn" id="momentumDec">-1</button>
+                <span id="momentumVal">2</span>
+                <button class="btn" id="momentumInc">+1</button>
+                <button class="btn small" id="momentumReset">⟲ 2</button>
+              </div>
+            </div>
+            <div class="xp-box">
+              <span>⭐ Experience</span>
+              <button class="btn small" id="xpInc">+1</button>
+              <span id="xpVal">0</span>
+            </div>
+          </div>
+          <div class="char-background">
+            <label>Background</label>
+            <textarea id="charBackground" rows="3" placeholder="Your story..."></textarea>
+          </div>
+          <div class="char-vows">
+            <h3>⚔️ Iron Vows</h3>
+            <div id="vowsList" class="compact-tracks"></div>
+            <button class="btn small" id="addVowBtn">+ Add Vow</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Map Tab (loaded from /map) -->
+      <section id="map" class="tab-pane">
+        <div id="mapContainer" class="map-container">
+          <!-- map content will be injected via map.js -->
+          <div class="map-loading">Loading map module...</div>
+        </div>
+      </section>
+
+      <!-- Locations Tab -->
+      <section id="locations" class="tab-pane">
+        <div class="pane-header">
+          <h2>Locations</h2>
+        </div>
+        <div id="locationsList" class="location-list"></div>
+      </section>
+
+      <!-- NPCs Tab -->
+      <section id="npcs" class="tab-pane">
+        <div class="pane-header">
+          <h2>Characters (NPCs)</h2>
+          <button class="btn primary" id="addNpcBtn">+ Add NPC</button>
+        </div>
+        <div id="npcsList" class="npcs-list"></div>
+        <!-- NPC edit modal -->
+        <div id="npcModal" class="modal hidden">
+          <div class="modal-card wide">
+            <h3 id="npcModalTitle">Edit NPC</h3>
+            <div class="npc-form">
+              <input type="text" id="npcName" placeholder="Name">
+              <div class="npc-stats">
+                <span>❤️ <input type="number" id="npcHealth" min="0" max="5" value="3"></span>
+                <span>✨ <input type="number" id="npcSpirit" min="0" max="5" value="3"></span>
+                <span>🎒 <input type="number" id="npcSupply" min="0" max="5" value="3"></span>
+                <span>⚡ <input type="number" id="npcMomentum" min="-6" max="10" value="0"></span>
+              </div>
+              <input type="text" id="npcItems" placeholder="Items (comma separated)">
+              <input type="text" id="npcMood" placeholder="Mood">
+              <input type="text" id="npcGoal" placeholder="Goal">
+              <label>Iron Vow (track) </label>
+              <select id="npcVowSelect"><option value="">None</option></select>
+              <label>Bond (progress track) </label>
+              <select id="npcBondSelect"><option value="">None</option></select>
+              <textarea id="npcNotes" placeholder="Notes" rows="2"></textarea>
+            </div>
+            <div class="modal-actions">
+              <button class="btn" id="cancelNpcModal">Cancel</button>
+              <button class="btn danger" id="deleteNpcBtn">Delete</button>
+              <button class="btn primary" id="saveNpcBtn">Save</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- global modals/overlays can go here -->
+  <script src="app.js" type="module"></script>
+</body>
+</html>
